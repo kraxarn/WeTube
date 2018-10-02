@@ -1,0 +1,95 @@
+﻿#container {
+	max-width: 95%;
+}
+
+.dropShadow {
+	background-color: rgba(0, 0, 0, 0.4);
+	border-radius: 12px;
+}
+
+.message {
+	font-family: rcLight;
+	text-align: center;
+	opacity: 0.9;
+}
+
+#video {
+	width: 960px;
+	height: 540px;
+}
+
+#noVideo {
+	position: relative;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+}
+
+#noVideo {
+	font-family: rLight;
+}
+
+#content {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	margin-top: 16px;
+}
+
+#search, #comments, #queue {
+	padding: 16px;
+}
+
+#search {
+	width: 60%;
+	margin-right: 16px;
+	display: flex;
+	flex-direction: column;
+}
+
+#commentsQueue {
+	width: 40%;
+}
+
+#queue {
+	margin-top: 16px;
+}
+
+#comments {
+	font-family: rLight;
+}
+
+#comments td {
+	min-width: 16px;
+	padding-bottom: 4px;
+}
+
+#commentsContainer {
+	height: 220px;
+}
+
+#commentEntry, #videoSearch {
+	background-color: rgba(200, 200, 200, 0.1);
+	color: #eeeeee;
+	border: 0;
+}
+
+#commentEntry {
+	width: 100%;
+	border: 0;
+	padding: 6px;
+	box-sizing: border-box;
+	border-radius: 4px;
+}
+
+#comments .userTitle {
+	font-family: rRegular;
+}
+
+#videoSearch {
+	padding: 8px;
+	width: 60%;
+	align-self: center;
+	border-radius: 6px;
+}

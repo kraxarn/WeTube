@@ -1,0 +1,54 @@
+﻿@{
+	ViewData["Title"] = "View Room";
+	ViewData["Page"]  = "roomView";
+}
+
+<div id="container">
+	<div id="video" class="dropShadow">
+		<div id="noVideo">
+			<h3>Queue's empty!</h3>
+			Add new videos to the queue by searching for them below.
+		</div>
+	</div>
+	<div id="content">
+		<div id="search" class="dropShadow">
+			<input id="videoSearch" type="text" placeholder="Search">
+		</div>
+		<div id="commentsQueue">
+			<div id="comments" class="dropShadow">
+				<div id="commentsContainer">
+					<table>
+						<tr>
+							<td><img src="/img/icon/status.png" /></td>
+							<td colspan="2">User1 joined the room</td>
+						</tr>
+						<tr>
+							<td><img src="/img/icon/status.png" /></td>
+							<td colspan="2">User2 joined the room</td>
+						</tr>
+						<tr>
+							<td><img src="/img/icon/message.png" /></td>
+							<td class="userTitle">User1:</td>
+							<td>How exciting! Some sample text.</td>
+						</tr>
+						<tr>
+							<td><img src="/img/icon/message.png" /></td>
+							<td class="userTitle">User2:</td>
+							<td>I know right? It even wraps quite nicely when typing long messages.</td>
+						</tr>
+						<tr>
+							<td><img src="/img/icon/playback.png" /></td>
+							<td colspan="2">User1 started playback</td>
+						</tr>
+					</table>
+				</div>
+				<input id="commentEntry" type="text" placeholder="Comment">
+			</div>
+			<div id="queue" class="dropShadow">
+				<span class="message">
+					Queue is currently empty.
+				</span>
+			</div>
+		</div>
+	</div>
+</div>

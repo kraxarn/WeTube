@@ -4,7 +4,12 @@ namespace WeTube.Controllers
 {
 	public class RoomsController : Controller
 	{
-		public IActionResult Index(string id)
+		public IActionResult Index()
+		{
+			return View();
+		}
+
+		public IActionResult View(string id)
 		{
 			return View();
 		}

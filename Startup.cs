@@ -65,7 +65,7 @@ namespace WeTube
 			        defaults: new
 			        {
 				        controller = "Rooms",
-				        action = "Index"
+				        action = "View"
 			        });
 
 		        routes.MapRoute(
