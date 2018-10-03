@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Principal;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WeTube.Storage;
 
 namespace WeTube.Controllers
 {
 	public class ApiController : Controller
 	{
+		#region Helpers
+
 		private string GetUserValue(string type) => 
 			HttpContext.User.Claims.FirstOrDefault(x => x.Type == type)?.Value;
 
@@ -51,6 +56,8 @@ namespace WeTube.Controllers
 			});
 		}
 
+		#endregion
+
 		public IActionResult Index()
 		{
 			return new JsonResult(new
@@ -59,6 +66,8 @@ namespace WeTube.Controllers
 				message = "Invalid request"
 			});
 		}
+
+		#region Account
 
 		public IActionResult SetUserInfo(string name, string avatar)
 		{
@@ -83,6 +92,10 @@ namespace WeTube.Controllers
 			return GetResponse(false, null);
 		}
 
+		#endregion
+
+		#region Rooms
+		
 		public IActionResult CreateRoom(string name)
 		{
 			// Check if name is empty
@@ -137,5 +150,46 @@ namespace WeTube.Controllers
 		 *		]
 		 *	}
 		 */
+
+		#endregion
+
+		#region YouTube
+
+		public struct YoutubeVideo
+		{
+			public string Id, Title, Description, Thumbnail;
+		}
+
+		public IActionResult Search(string q)
+		{
+			if (q == null)
+				return GetResponse(true, "Missing query");
+
+			using (var client = new WebClient())
+			{
+				dynamic info = JsonConvert.DeserializeObject(client.DownloadString($"https://www.googleapis.com/youtube/v3/search?part=snippet&results=5&q={q}&type=video&key={Config.ApiGoogle}"));
+
+				var videos = new List<YoutubeVideo>();
+
+				foreach (var item in info.items)
+				{
+					videos.Add(new YoutubeVideo
+					{
+						Id = item.id.videoId,
+						Title = item.snippet.title,
+						Description = item.snippet.description,
+						Thumbnail = item.snippet.thumbnails.medium.url
+					});
+				}
+
+				return new JsonResult(new
+				{
+					error = false,
+					message = videos
+				});
+			}
+		}
+
+		#endregion
 	}
 }

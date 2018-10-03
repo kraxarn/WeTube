@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WeTube.Storage;
 
 namespace WeTube
 {
@@ -37,6 +38,9 @@ namespace WeTube
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+			// Load config
+			Config.Load();
+
 	        if (env.IsDevelopment())
 		        app.UseDeveloperExceptionPage();
 	        else

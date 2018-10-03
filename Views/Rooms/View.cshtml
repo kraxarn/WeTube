@@ -13,6 +13,22 @@
 	<div id="content">
 		<div id="search" class="dropShadow">
 			<input id="videoSearch" type="text" placeholder="Search">
+			<div id="searchResults">
+				<!-- Example layout of result -->
+				<!--
+				<div class="searchResult">
+					<div class="searchInfo">
+						<img class="searchThumbnail">
+						<h4>title</h4>
+						<p>description</p>
+					</div>
+					<div class="addQueueContainer">
+						<img src="/img/icon/addQueue.png"> <br>
+						Add to Queue
+					</div>
+				</div>
+				-->
+			</div>
 		</div>
 		<div id="commentsQueue">
 			<div id="comments" class="dropShadow">
@@ -52,3 +68,106 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	window.videoSearch.addEventListener("input", () =>
+	{
+		// Get search query
+		const query = window.videoSearch.value
+
+		// Check is search is too short
+		if (query.length < 3) {
+			resetSearchResults()
+			return
+		}
+
+		// Search
+		search(query, callback =>
+		{
+			resetSearchResults()
+			callback.forEach(item =>
+			{
+				addSearchResult(item.thumbnail, item.title, item.description)
+			})
+		})
+	})
+	
+	function search(query, callback)
+	{
+		fetch(`/api/search/?q=${query}`)
+			.then(response =>
+			{
+				return response.json()
+			})
+			.then(json =>
+			{
+				if (json.error) {
+					callback(null)
+				} else {
+					callback(json.message)
+				}
+			})
+	}
+
+	function addSearchResult(thumbnailSrc, titleText, descriptionText)
+	{
+		if (!thumbnailSrc || !titleText || !descriptionText) {
+			console.log("Warning: One or more values missing, not adding result")
+			return
+		}
+
+		// Main search result
+		const searchResult = document.createElement("div")
+		searchResult.className = "searchResult"
+
+		// Search info
+		const searchInfo = document.createElement("div")
+		searchInfo.className = "searchInfo"
+		searchResult.appendChild(searchInfo)
+
+		// Search info: Thumbnail
+		const thumbnail = document.createElement("img")
+		thumbnail.className = "searchThumbnail"
+		thumbnail.src = thumbnailSrc
+		searchInfo.appendChild(thumbnail)
+
+		// Search info: Title
+		const title = document.createElement("h5")
+		if (titleText.length > 60) {
+			titleText = titleText.subString(0, 60) + "..."
+		}
+		title.textContent = titleText
+		searchInfo.appendChild(title)
+
+		// Search info: Description
+		const description = document.createElement("p")
+		description.textContent = descriptionText
+		searchInfo.appendChild(description)
+
+		// Add queue container
+		const queue = document.createElement("div")
+		queue.className = "addQueueContainer"
+		searchResult.appendChild(queue)
+
+		// Add queue container: Img
+		const queueImg = document.createElement("img")
+		queueImg.src = "/img/icon/addQueue.png"
+		queue.appendChild(queueImg)
+
+		// Add queue container: Span
+		const queueTxt = document.createElement("span")
+		queueTxt.textContent = "Add to Queue"
+		queue.appendChild(queueTxt)
+
+		// Add result to results
+		searchResults.appendChild(searchResult)
+	}
+
+	function resetSearchResults()
+	{
+		const results = window.searchResults
+		while (results.firstChild) {
+			results.removeChild(results.firstChild)
+		}
+	}
+</script>
