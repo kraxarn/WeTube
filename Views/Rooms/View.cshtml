@@ -192,6 +192,9 @@
 <!-- Socket.IO 2.1.0 -->
 <script src="/js/socket.io.slim.js"></script>
 <script>
+
+	const username = @Model.Name
+
 	// TODO: Auto get IP
 	const socket = io("ws://localhost:3000")
 	socket.on("connect", () =>

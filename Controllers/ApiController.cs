@@ -1,16 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Net;
-using System.Security.Claims;
-using System.Security.Principal;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using WeTube.Storage;
+using Cookie = WeTube.Storage.Cookie;
 
 namespace WeTube.Controllers
 {
@@ -18,34 +12,8 @@ namespace WeTube.Controllers
 	{
 		#region Helpers
 
-		private string GetUserValue(string type) => 
-			HttpContext.User.Claims.FirstOrDefault(x => x.Type == type)?.Value;
-
-		private bool SetUserValue(string type, string value)
-		{
-			var claims = new ClaimsIdentity(User.Claims);
-			if (!claims.TryRemoveClaim(claims.FindFirst(type)))
-				return false;
-			claims.AddClaim(new Claim(type, value));
-			ReSignIn(claims);
-			return true;
-		}
-
-		private async void ReSignIn(IIdentity identity)
-		{
-			await HttpContext.SignOutAsync();
-			await HttpContext.SignInAsync(
-				CookieAuthenticationDefaults.AuthenticationScheme,
-				new ClaimsPrincipal(new ClaimsIdentity(identity)),
-				new AuthenticationProperties
-				{
-					IsPersistent = true,
-					ExpiresUtc = DateTime.UtcNow.AddYears(1)
-				}
-			);
-		}
-
-		private async void SignOutAsync() => await HttpContext.SignOutAsync();
+		private bool SetUserValue(string type, string value) => 
+			Cookie.SetUserValue(HttpContext, User.Claims, type, value);
 
 		private static JsonResult GetResponse(bool err, string msg)
 		{
@@ -88,7 +56,7 @@ namespace WeTube.Controllers
 
 		public IActionResult SignOut()
 		{
-			SignOutAsync();
+			Cookie.SignOut(HttpContext);
 			return GetResponse(false, null);
 		}
 
@@ -123,7 +91,7 @@ namespace WeTube.Controllers
 			{
 				Id    = id,
 				Name  = name,
-				Owner = GetUserValue("Id")
+				Owner = Cookie.GetUserValue(HttpContext, "Id")
 			};
 
 			try
