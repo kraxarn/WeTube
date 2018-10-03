@@ -10,25 +10,24 @@
 			Add new videos to the queue by searching for them below.
 		</div>
 	</div>
+	<div id="videoControls" class="dropShadow">
+		<div id="roomTitle">
+			Room Name - Video Name
+		</div>
+		<div id="videoSize" onclick="toggleVideoSize()">
+			Size: <span id="videoSizeString">540</span>p
+			<div id="videoSizeDropdown">
+				<span>Auto</span>
+				<span onclick="setVideoSize(960, 540)">540p</span>
+				<span onclick="setVideoSize(1280, 720)">720p</span>
+				<span onclick="setVideoSize(1920, 1080)">1080p</span>
+			</div>
+		</div>
+	</div>
 	<div id="content">
 		<div id="search" class="dropShadow">
 			<input id="videoSearch" type="text" placeholder="Search">
-			<div id="searchResults">
-				<!-- Example layout of result -->
-				<!--
-				<div class="searchResult">
-					<div class="searchInfo">
-						<img class="searchThumbnail">
-						<h4>title</h4>
-						<p>description</p>
-					</div>
-					<div class="addQueueContainer">
-						<img src="/img/icon/addQueue.png"> <br>
-						Add to Queue
-					</div>
-				</div>
-				-->
-			</div>
+			<div id="searchResults"></div>
 		</div>
 		<div id="commentsQueue">
 			<div id="comments" class="dropShadow">
@@ -169,5 +168,23 @@
 		while (results.firstChild) {
 			results.removeChild(results.firstChild)
 		}
+	}
+
+	function toggleVideoSize()
+	{
+		const dropdown = window.videoSizeDropdown
+		const visible = dropdown.style.visibility === "visible" ? true : false
+
+		dropdown.style.visibility = visible ? "hidden" : "visible"
+	}
+
+	function setVideoSize(width, height)
+	{
+		console.log("Size: %sx%s", width, height)
+
+		window.video.style.width  = width + "px"
+		window.video.style.height = height + "px"
+
+		window.videoSizeString.textContent = height
 	}
 </script>

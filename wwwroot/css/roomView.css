@@ -16,6 +16,7 @@
 #video {
 	width: 960px;
 	height: 540px;
+	transition: all 0.5s ease-in-out;
 }
 
 #noVideo {
@@ -30,11 +31,45 @@
 	font-family: rLight;
 }
 
+#videoControls {
+	margin-top: 16px;
+	padding: 8px 16px 8px 16px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	font-family: rcRegular;
+}
+
+#videoSize {
+	margin-left: auto;
+	cursor: pointer;
+	position: relative;
+}
+
+#videoSizeDropdown {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.4);
+	width: 100%;
+	visibility: hidden;
+}
+
+#videoSizeDropdown span {
+	padding: 8px;
+	transition: background-color 0.1s ease-in-out;
+}
+
+#videoSizeDropdown span:hover {
+	background-color: rgba(25, 35, 125, 0.6);
+}
+
 #content {
 	display: flex;
 	flex-direction: row;
 	align-items: flex-start;
 	margin-top: 16px;
+	justify-content: center;
 }
 
 #search, #comments, #queue {
@@ -46,10 +81,14 @@
 	margin-right: 16px;
 	display: flex;
 	flex-direction: column;
+	/* 60% of 1200px */
+	max-width: 720px;
 }
 
 #commentsQueue {
 	width: 40%;
+	/* 40% of 1200px */
+	max-width: 480px;
 }
 
 #queue {
