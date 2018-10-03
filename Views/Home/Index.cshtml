@@ -9,7 +9,7 @@
 <div id="container">
 	<h1> Welcome to WeTube! </h1>
 	<div id="profile">
-		<img id="avatar" src="/img/avatar/@(ViewData["Avatar"]).png">
+		<img id="avatar" src="/img/avatar/@(Model.Avatar).png">
 		<div id="avatarSelect">
 			@foreach (var image in WeTube.Storage.User.Images)
 			{
@@ -19,9 +19,9 @@
 				</div>
 			}
 		</div>
-		<span id="username">@ViewData["Name"] (@ViewData["Id"])</span>
+		<span id="username">@Model.Name (@Model.Id)</span>
 		<div id="nameEntry">
-			<input id="nameInput" type="text" value="@(ViewData["Name"])">
+			<input id="nameInput" type="text" value="@Model.Name">
 			<div id="saveName" class="button">Save</div>
 		</div>
 	</div>

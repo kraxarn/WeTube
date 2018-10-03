@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
@@ -14,11 +15,14 @@ namespace WeTube.Controllers
         {
 			RefreshCookie();
 
-	        ViewData["Name"]   = GetUserValue("Name");
-	        ViewData["Avatar"] = GetUserValue("Avatar");
-	        ViewData["Id"]     = GetUserValue("Id");
+	        var user = new UserValues
+	        {
+				Id     = GetUserValue("Id"),
+				Name   = GetUserValue("Name"),
+				Avatar = GetUserValue("Avatar")
+			};
 
-			return View();
+			return View(user);
         }
 
 	    public IActionResult Error(int code)

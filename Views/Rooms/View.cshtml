@@ -188,3 +188,36 @@
 		window.videoSizeString.textContent = height
 	}
 </script>
+
+<!-- Socket.IO 2.1.0 -->
+<script src="/js/socket.io.slim.js"></script>
+<script>
+	// TODO: Auto get IP
+	const socket = io("ws://localhost:3000")
+	socket.on("connect", () =>
+	{
+		console.log("Connected to chat")
+		// TODO: Send username and room to server
+		socket.emit("join",
+			{
+				username: "username",
+				room: "room"
+			})
+	})
+	socket.on("event", data =>
+	{
+		console.log("Event")
+	})
+	socket.on("disconnect", () =>
+	{
+		console.log("Disconnect from chat")
+	})
+	socket.on("connect_error", error =>
+	{
+		console.log("Connection error")
+	})
+	socket.on("message", data =>
+	{
+		console.log(data)
+	})
+</script>
