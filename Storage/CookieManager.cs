@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace WeTube.Storage
 {
-	public abstract class Cookie
+	public abstract class CookieManager
 	{
 		public static async void RefreshCookie(HttpContext context)
 		{

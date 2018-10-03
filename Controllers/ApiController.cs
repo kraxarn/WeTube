@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using WeTube.Storage;
-using Cookie = WeTube.Storage.Cookie;
 
 namespace WeTube.Controllers
 {
@@ -13,7 +12,7 @@ namespace WeTube.Controllers
 		#region Helpers
 
 		private bool SetUserValue(string type, string value) => 
-			Cookie.SetUserValue(HttpContext, User.Claims, type, value);
+			CookieManager.SetUserValue(HttpContext, User.Claims, type, value);
 
 		private static JsonResult GetResponse(bool err, string msg)
 		{
@@ -56,7 +55,7 @@ namespace WeTube.Controllers
 
 		public IActionResult SignOut()
 		{
-			Cookie.SignOut(HttpContext);
+			CookieManager.SignOut(HttpContext);
 			return GetResponse(false, null);
 		}
 
@@ -91,7 +90,7 @@ namespace WeTube.Controllers
 			{
 				Id    = id,
 				Name  = name,
-				Owner = Cookie.GetUserValue(HttpContext, "Id")
+				Owner = CookieManager.GetUserValue(HttpContext, "Id")
 			};
 
 			try

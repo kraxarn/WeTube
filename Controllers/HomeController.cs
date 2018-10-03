@@ -7,8 +7,8 @@ namespace WeTube.Controllers
     {
         public IActionResult Index()
         {
-	        Cookie.RefreshCookie(HttpContext);
-			return View(Cookie.GetCurrentUser(HttpContext));
+	        CookieManager.RefreshCookie(HttpContext);
+			return View(CookieManager.GetCurrentUser(HttpContext));
         }
 
 	    public IActionResult Error(int code)
