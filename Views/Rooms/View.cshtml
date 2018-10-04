@@ -35,9 +35,10 @@
 				<input id="commentEntry" type="text" placeholder="Comment">
 			</div>
 			<div id="queue" class="dropShadow">
-				<span class="message">
+				<span id="noQueueItems" class="message">
 					Queue is currently empty.
 				</span>
+				<div id="queueContainer"></div>
 			</div>
 		</div>
 	</div>
@@ -61,7 +62,7 @@
 			resetSearchResults()
 			callback.forEach(item =>
 			{
-				addSearchResult(item.thumbnail, item.title, item.description)
+				addSearchResult(item.thumbnail, item.title, item.description, item.id)
 			})
 		})
 	})
@@ -83,7 +84,7 @@
 			})
 	}
 
-	function addSearchResult(thumbnailSrc, titleText, descriptionText)
+	function addSearchResult(thumbnailSrc, titleText, descriptionText, videoId)
 	{
 		if (!thumbnailSrc || !titleText || !descriptionText) {
 			console.log("Warning: One or more values missing, not adding result")
@@ -121,6 +122,7 @@
 		// Add queue container
 		const queue = document.createElement("div")
 		queue.className = "addQueueContainer"
+		queue.onclick = () => addVideo(videoId, titleText)
 		searchResult.appendChild(queue)
 
 		// Add queue container: Img
@@ -185,6 +187,49 @@
 		addComment("message", "User2: I know right? It even wraps quite nicely when typing long messages.")
 		addComment("playback", "User1 started playback")
 	}
+
+	function addQueueItem(thumbnailSrc, titleText, videoId)
+	{
+		// Hide no queue message
+		window.noQueueItems.style.display = "none"
+
+		// Main item container
+		const item = document.createElement("div")
+		item.className = "queueItem"
+		item.id = videoId
+
+		// Background thumbnail
+		const thumbnail = document.createElement("img")
+		thumbnail.className = "queueThumbnail"
+		thumbnail.src = thumbnailSrc
+		item.appendChild(thumbnail)
+
+		// Video title
+		const title = document.createElement("h5")
+		// TODO: 60 is probably too long
+		if (titleText.length > 60) {
+			titleText = titleText.subString(0, 60) + "..."
+		}
+		title.textContent = titleText
+		item.appendChild(title)
+
+		// Remove button
+		const rem = document.createElement("img")
+		rem.className = "queueRemove"
+		rem.src = "/img/icon/remove.png"
+		item.appendChild(rem)
+
+		window.queueContainer.appendChild(item)
+	}
+
+	// Testing only, use array later
+	function getQueuedItems()
+	{
+		const children = window.queueContainer.children
+		for (let i = 0; i < children.length; i++) {
+			console.log(children[i].id)
+		}
+	}
 </script>
 
 <!-- Socket.IO 2.1.0 -->
@@ -217,7 +262,7 @@
 
 	socket.on("enter", data =>
 	{
-		addComment("status", `${data.name} joined`)
+		addComment("status", `${data.name === name ? "You" : data.name} joined`)
 	})
 
 	socket.on("leave", data =>
@@ -228,7 +273,23 @@
 	socket.on("message", data =>
 	{
 		addComment("message", `${data.name === name ? "You" : data.name}: ${data.message}`)
-
 		window.commentsContainer.scrollTop = window.commentsContainer.scrollHeight
 	})
+
+	socket.on("video", data =>
+	{
+		console.log(data)
+		if (data.type === "add") {
+			addQueueItem(`https://i.ytimg.com/vi/${data.id}/mqdefault.jpg`, data.title, data.id)
+		}
+	})
+
+	function addVideo(id, title) {
+		socket.emit("video",
+			{
+				type: "add",
+				id: id,
+				title: title
+			})
+	}
 </script>
