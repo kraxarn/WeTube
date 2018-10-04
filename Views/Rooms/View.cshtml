@@ -12,7 +12,7 @@
 	</div>
 	<div id="videoControls" class="dropShadow">
 		<div id="roomTitle">
-			Room Name - Video Name
+			@ViewData["RoomId"] - Video Name
 		</div>
 		<div id="videoSize" onclick="toggleVideoSize()">
 			Size: <span id="videoSizeString">540</span>p
@@ -31,32 +31,7 @@
 		</div>
 		<div id="commentsQueue">
 			<div id="comments" class="dropShadow">
-				<div id="commentsContainer">
-					<table>
-						<tr>
-							<td><img src="/img/icon/status.png" /></td>
-							<td colspan="2">User1 joined the room</td>
-						</tr>
-						<tr>
-							<td><img src="/img/icon/status.png" /></td>
-							<td colspan="2">User2 joined the room</td>
-						</tr>
-						<tr>
-							<td><img src="/img/icon/message.png" /></td>
-							<td class="userTitle">User1:</td>
-							<td>How exciting! Some sample text.</td>
-						</tr>
-						<tr>
-							<td><img src="/img/icon/message.png" /></td>
-							<td class="userTitle">User2:</td>
-							<td>I know right? It even wraps quite nicely when typing long messages.</td>
-						</tr>
-						<tr>
-							<td><img src="/img/icon/playback.png" /></td>
-							<td colspan="2">User1 started playback</td>
-						</tr>
-					</table>
-				</div>
+				<div id="commentsContainer"></div>
 				<input id="commentEntry" type="text" placeholder="Comment">
 			</div>
 			<div id="queue" class="dropShadow">
@@ -180,47 +155,80 @@
 
 	function setVideoSize(width, height)
 	{
-		console.log("Size: %sx%s", width, height)
-
 		window.video.style.width  = width + "px"
 		window.video.style.height = height + "px"
 
 		window.videoSizeString.textContent = height
+	}
+
+	function addComment(type, message)
+	{
+		const comment = document.createElement("div")
+		comment.className = "comment"
+
+		const img = document.createElement("img")
+		img.src = `/img/icon/${type}.png`
+		comment.appendChild(img)
+
+		const msg = document.createElement("span")
+		msg.textContent = message
+		comment.appendChild(msg)
+
+		window.commentsContainer.appendChild(comment)
+	}
+
+	function addTestComments()
+	{
+		addComment("status", "User1 joined")
+		addComment("status", "User2 joined")
+		addComment("message", "User1: How exciting, some sample text")
+		addComment("message", "User2: I know right? It even wraps quite nicely when typing long messages.")
+		addComment("playback", "User1 started playback")
 	}
 </script>
 
 <!-- Socket.IO 2.1.0 -->
 <script src="/js/socket.io.slim.js"></script>
 <script>
+	const name = "@Model.Name"
+	const roomId = "@ViewData["RoomId"]"
 
-	const username = @Model.Name
+	const entry = window.commentEntry
+	entry.addEventListener("keypress", event =>
+	{
+		if (event.key === "Enter") {
+			if (entry.value.length > 0 && entry.value.length < 256) {
+				socket.emit("message", entry.value)
+			}
+			entry.value = null
+		}
+	})
 
 	// TODO: Auto get IP
 	const socket = io("ws://localhost:3000")
 	socket.on("connect", () =>
 	{
-		console.log("Connected to chat")
-		// TODO: Send username and room to server
 		socket.emit("join",
 			{
-				username: "username",
-				room: "room"
+				name: name,
+				room: roomId
 			})
 	})
-	socket.on("event", data =>
+
+	socket.on("enter", data =>
 	{
-		console.log("Event")
+		addComment("status", `${data.name} joined`)
 	})
-	socket.on("disconnect", () =>
+
+	socket.on("leave", data =>
 	{
-		console.log("Disconnect from chat")
+		addComment("status", `${data.name} left`)
 	})
-	socket.on("connect_error", error =>
-	{
-		console.log("Connection error")
-	})
+
 	socket.on("message", data =>
 	{
-		console.log(data)
+		addComment("message", `${data.name === name ? "You" : data.name}: ${data.message}`)
+
+		window.commentsContainer.scrollTop = window.commentsContainer.scrollHeight
 	})
 </script>

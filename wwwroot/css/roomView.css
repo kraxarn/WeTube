@@ -99,13 +99,24 @@
 	font-family: rLight;
 }
 
-#comments td {
+.comment {
 	min-width: 16px;
 	padding-bottom: 4px;
 }
 
+.comment img {
+	margin-right: 8px;
+	width: 16px;
+}
+
+.comment span {
+	font-size: 0.9em;
+}
+
 #commentsContainer {
 	height: 220px;
+	overflow-y: auto;
+	margin-bottom: 8px;
 }
 
 #commentEntry, #videoSearch {

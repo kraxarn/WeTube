@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WeTube.Storage;
 
 namespace WeTube.Controllers
 {
@@ -9,9 +10,10 @@ namespace WeTube.Controllers
 			return View();
 		}
 
-		public IActionResult View(string id)
+		public new IActionResult View(string id)
 		{
-			return View();
+			ViewData["RoomId"] = id;
+			return View(CookieManager.GetCurrentUser(HttpContext));
 		}
 	}
 }
